@@ -45,6 +45,8 @@ export default {
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
     '@nuxtjs/style-resources',
+    ['nuxt-buefy', { css: true, materialDesignIcons: true }],
+
 
   ],
   /*
@@ -52,11 +54,11 @@ export default {
   ** See https://axios.nuxtjs.org/options
   */
   axios: {
-    proxy : true
-  },
+    host: 'localhost',
+    port: '5000',  },
   styleResources: {
     scss: [
-      // '~/assets/tiptap/main.scss'
+      '~/assets/b-style.scss'
     ]
   },
   /*

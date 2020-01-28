@@ -1,6 +1,11 @@
 <template>
   <div>
     <div class="notification">
+      <div class="field">
+        <div class="control">
+          <p class="label">Upload Images</p>
+        </div>
+      </div>
       <div class="field is-grouped is-grouped-multiline">
         <div class="control">
           <div class="file">
@@ -14,9 +19,8 @@
                 multiple
               />
               <span class="file-cta">
-                <span class="file-icon">
-                  <feather type="upload" size="1rem"></feather>
-                </span>
+                <b-icon icon="cloud-upload" class="icon-btn" />
+
                 <span class="file-label">Choose a file…</span>
               </span>
             </label>
@@ -24,10 +28,7 @@
         </div>
         <div class="control">
           <button class="button is-danger is-light" @click="clearUploads">
-            <span class="file-icon">
-              <feather type="x" size="1rem"></feather>
-            </span>
-            Clear
+            <b-icon icon="delete" class="icon-btn" />Clear
           </button>
         </div>
       </div>
@@ -62,77 +63,67 @@
 </template>
 
 <script>
-    export default {
-           props: {
-        },
-        data() {
-            return {
-                imageData: null ,
-                files : [],
-                imageUrlArray : []
+export default {
+  props: {},
+  data() {
+    return {
+      imageData: null,
+      files: [],
+      imageUrlArray: []
+    };
+  },
+  watch: {
+    files: function() {
+      this.$emit("input", this.files);
+    }
+  },
+  filters: {
+    getIndexedImage(val, index) {
+      // console.log(`This: ${val}`);
+      return val[index];
+    },
 
-            }
-        },
-        watch: {
-          files: function(){
-            this.$emit( 'input' , this.files)
-          }
-        },
-        filters: {
-            getIndexedImage(val, index) {
-                // console.log(`This: ${val}`);
-                return val[index];
-            },
+    formatBytes(a, b) {
+      if (0 == a) return "0 Bytes";
+      var c = 1024,
+        d = b || 2,
+        e = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
+        f = Math.floor(Math.log(a) / Math.log(c));
+      return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f];
+    }
+  },
+  methods: {
+    listUploads(e) {
+      let files = e.srcElement.files;
 
-            formatBytes(a, b) {
-                if (0 == a) return "0 Bytes";
-                var c = 1024,
-                    d = b || 2,
-                    e = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"],
-                    f = Math.floor(Math.log(a) / Math.log(c));
-                return parseFloat((a / Math.pow(c, f)).toFixed(d)) + " " + e[f]
-            }
-        },
-        methods: {
+      let self = this;
 
-            listUploads(e) {
-                let files = e.srcElement.files;
+      for (var index = 0; index < files.length; index++) {
+        // generate a new FileReader object
+        var reader = new FileReader();
+        self.files.push(files[index]);
+        // inject an image with the src url
+        reader.onload = function(event) {
+          const imageUrl = event.target.result;
+          // const thumb = document.querySelectorAll('.thumb')[index];
+          self.imageUrlArray.push(imageUrl);
+        };
 
-
-                let self = this;
-
-                for (var index = 0; index < files.length; index++) {
-                // generate a new FileReader object
-                    var reader = new FileReader();
-                    self.files.push(files[index])
-                    // inject an image with the src url
-                    reader.onload = function (event) {
-                        const imageUrl = event.target.result;
-                        // const thumb = document.querySelectorAll('.thumb')[index];
-                        self.imageUrlArray.push(imageUrl);
-                    }
-
-                    // when the file is read it triggers the onload 
-                    // event above.
-                    reader.readAsDataURL(files[index]);
-            }
-             
-        }, 
-         deleteItem: function (index) {
-
-            this.files.splice(index, 1)
-            this.imageUrlArray.splice(index, 1)
-
-
-        },
-        clearUploads() {
-            this.imageUrlArray = []
-            this.files = []
-
-        },
-        
-    }  
-}
+        // when the file is read it triggers the onload
+        // event above.
+        reader.readAsDataURL(files[index]);
+      }
+    },
+    deleteItem: function(index) {
+      this.files.splice(index, 1);
+      this.imageUrlArray.splice(index, 1);
+    },
+    clearUploads() {
+      this.imageUrlArray = [];
+      this.files = [];
+    }
+  }
+};
 </script>
 
 <style>

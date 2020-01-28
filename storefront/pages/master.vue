@@ -138,8 +138,8 @@
             <div class="field-body is-horizontal">
               <div class="field">
                 <div class="control">
-                  <label for class="label">Pricing</label>
-                  <input type="text" class="input" v-model="form.pricing" placeholder="Price" />
+                  <label for class="label">price</label>
+                  <input type="text" class="input" v-model="form.price" placeholder="Price" />
                 </div>
               </div>
               <div class="field">
@@ -184,17 +184,15 @@
         <div class="navbar-brand">
           <p class="navbar-item">
             <button class="level-item button is-link is-light" @click="submit">
-              <span class="icon icon-btn">
-                <feather type="check" size="1.3rem" />
-              </span>
+                <b-icon icon="checkbox-marked-outline" class="icon-btn" />
+
               Save
             </button>
           </p>
           <p class="navbar-item">
             <button class="button is-primary is-light" @click="createNew">
-              <span class="icon icon-btn">
-                <feather type="x" size="1.3rem" />
-              </span>
+                          <b-icon icon="delete" class="icon-btn" />
+
               Clear
             </button>
           </p>
@@ -251,7 +249,7 @@ export default {
         qty: null,
         weight: null,
         sku: null,
-        pricing: null,
+        price: null,
         cost_price: null,
         type: null,
         tags: null
@@ -356,7 +354,7 @@ export default {
         qty: null,
         weight: null,
         sku: null,
-        pricing: null,
+        price: null,
         cost_price: null,
         handle: null,
         image_alt_text: null,
@@ -386,7 +384,7 @@ export default {
         qty: baseItem.qty,
         weight: baseItem.weight,
         sku: baseItem.sku,
-        pricing: baseItem.pricing,
+        price: baseItem.price,
         cost_price: baseItem.cost_price,
         handle: baseItem.handle,
         image_alt_text: baseItem.image_alt_text,
@@ -412,9 +410,11 @@ export default {
       let self = this;
       let formData = this.form 
       formData.description = this.editor.getHTML();
-      this.axios.post('/add/master' , JSON.stringify(formData))
+      this.$axios.post('/add/master' , JSON.stringify(formData) ,{headers: {
+                "Content-Type": "application/json"}
+            })
         .then( function(response){
-          
+          console.log(response)
         })
 }
   }
