@@ -9,6 +9,7 @@ from flask_marshmallow import Marshmallow
 from config import Config
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
+import shopify
 
 app = Flask(__name__)
 CORS(app)
@@ -20,12 +21,15 @@ migrate = Migrate(app, db)
 
 from model import Master, MasterSchema
 
-baseUrl = 'https://c5673965f8cef9f48d175bad834a39aa:ad4fd2c761999a71e58d3b22884cbef5@highoncarbs.myshopify.com/admin/api/2019-10/'
+SHOP_URL = 'https://c5673965f8cef9f48d175bad834a39aa:ad4fd2c761999a71e58d3b22884cbef5@highoncarbs.myshopify.com/admin/api/2019-10/'
+shopify.ShopifyResource.set_site(SHOP_URL)
+shop = shopify.Shop.current()
 
+import products
 
 @app.route('/get/products', methods=['GET'])
 def get_products():
-    data = requests.get(baseUrl + str('products.json'))
+    data = requests.get(SHOP_URL + str('products.json'))
     return data.json()
 
 

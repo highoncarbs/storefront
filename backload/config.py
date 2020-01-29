@@ -12,3 +12,4 @@ class Config(object):
 
     UPLOAD_FOLDER = './../uploads'
 
+SHOP_URL = 'https://c5673965f8cef9f48d175bad834a39aa:ad4fd2c761999a71e58d3b22884cbef5@highoncarbs.myshopify.com/admin/api/2019-10/'

@@ -22,8 +22,7 @@
         </div>
         <div class="level-right">
           <button class="button is-danger is-light" v-show="index != 0" @click="deleteItem(index)">
-           <b-icon icon="delete" class="icon-btn" />
-            Delete
+            <b-icon icon="delete" class="icon-btn" />Delete
           </button>
         </div>
       </div>
@@ -277,7 +276,7 @@
             </button>
           </p>
           <p class="navbar-item">
-            <button class="level-item button is-link is-light">
+            <button class="level-item button is-link is-light" @click="submit()">
               <b-icon icon="checkbox-marked-outline" class="icon-btn" />Save
             </button>
           </p>
@@ -373,10 +372,9 @@ export default {
         self.base_master = response.data;
       })
       .catch(function(error) {
-        console.log(error);
         self.$buefy.snackbar.open({
           duration: 4000,
-          message: "Unable to fetch data for Template",
+          message: "Unable to fetch data for Master",
           type: "is-light",
           position: "is-top-right",
           actionText: "Close",
@@ -388,7 +386,7 @@ export default {
       });
   },
   methods: {
-    initEditor(index , content) {
+    initEditor(index, content) {
       let self = this;
       this.products[index].editor = new Editor({
         extensions: [
@@ -477,7 +475,8 @@ export default {
         show: false
       });
       this.products.push({
-        editr: null,
+        editor: null,
+        HSN: null,
         query_master: "",
         data_master: this.base_master,
         files: null,
@@ -493,6 +492,7 @@ export default {
         image_alt_text: null,
         type: null,
         tags: null,
+        HSN: null,
         seo: {
           title: null,
           description: null
@@ -504,8 +504,7 @@ export default {
           condition: null
         }
       });
-      this.initEditor( this.products.length- 1 , '');
-
+      this.initEditor(this.products.length - 1, "");
     },
     createCopy() {
       let baseItem = this.products[0];
@@ -514,8 +513,7 @@ export default {
         show: false
       });
 
-      let new_product = 
-      this.products.push({
+      let new_product = this.products.push({
         editor: null,
         name: baseItem.name,
         qty: baseItem.qty,
@@ -528,6 +526,7 @@ export default {
         type: baseItem.type,
         tags: baseItem.tags,
         query_master: "",
+        HSN: null,
         data_master: this.base_master,
         seo: {
           title: baseItem.seo.title,
@@ -541,13 +540,46 @@ export default {
         }
       });
 
-      this.initEditor( this.products.length- 1);
-      this.products[this.products.length- 1].editor.setContent(baseItem.editor.getHTML())
-
+      this.initEditor(this.products.length - 1);
+      this.products[this.products.length - 1].editor.setContent(
+        baseItem.editor.getHTML()
+      );
     },
     deleteItem(index) {
       this.products.splice(index, 1);
       this.advanced.splice(index, 1);
+    },
+    submit() {
+      let self = this;
+      this.products.forEach(element => {
+        element.editor = element.editor
+        element.description = element.editor.getHTML();
+      });
+      let payload = Object.assign([], this.products);
+      console.log(payload);
+      payload.forEach(element => {
+        delete element.editor;
+      });
+
+      console.log(payload);
+      this.$axios
+        .post("/add/product", payload)
+        .then(function(response) {
+          self.$buefy.snackbar.open({
+            duration: 4000,
+            message: response.data.message,
+            type: "is-light",
+            position: "is-top-right",
+            actionText: "Close",
+            queue: true,
+            onAction: () => {
+              self.isActive = false;
+            }
+          });
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
   }
 };

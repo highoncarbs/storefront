@@ -45,4 +45,3 @@ class MasterSchema(ma.ModelSchema):
     class meta:
         model = Master
 
-# SKU's generated based on SKU + ID 
