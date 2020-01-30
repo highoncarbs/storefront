@@ -17,8 +17,9 @@ class Master(db.Model):
     cost_price = db.Column(db.Float , default=0)
     product_type = db.Column(db.String(50) , default="")
     tags = db.Column(db.String(500), default="")
+    hsn = db.Column(db.String(500), default="")
     
-    def __init__(self , name , description , qty , weight ,sku , price , cost_price, product_type , tags):
+    def __init__(self , name , description , qty , weight ,sku , price , cost_price, product_type , tags, hsn):
         self.name = name
         self.description = description
         self.qty = qty
@@ -28,6 +29,7 @@ class Master(db.Model):
         self.cost_price = cost_price
         self.product_type = product_type
         self.tags = tags
+        self.hsn = hsn
 
 class MasterSchema(ma.ModelSchema):
     id = field_for(Master, 'id', dump_only=True)
@@ -40,8 +42,16 @@ class MasterSchema(ma.ModelSchema):
     cost_price = field_for(Master, 'cost_price', dump_only=True)
     product_type = field_for(Master, 'product_type', dump_only=True)
     tags = field_for(Master, 'tags', dump_only=True)
+    hsn = field_for(Master, 'hsn', dump_only=True)
 
 
     class meta:
         model = Master
 
+class Products(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sku =  db.Column(db.String(100) , default="")
+    product_id = db.Column(db.String(100), default="", nullable=False)
+    
+    def __init__(self, product_id):
+        self.product_id = product_id

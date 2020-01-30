@@ -39,7 +39,7 @@ def add_master():
     if payload is not None:
         try:
             new_data = Master(payload['title'], payload['description'],
-                              payload['qty'], payload['weight'],  payload['sku'],   payload['price'], payload['cost_price'],  payload['type'], payload['tags'])
+                              payload['qty'], payload['weight'],  payload['sku'],   payload['price'], payload['cost_price'],  payload['type'], payload['tags'] ,  payload['hsn'])
             db.session.add(new_data)
             db.session.commit()
             return jsonify({'success': 'Data Added'})

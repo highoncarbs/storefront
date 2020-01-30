@@ -173,6 +173,17 @@
                 </div>
               </div>
             </div>
+            <br>
+            <div class="field">
+              <div class="control">
+                <label for class="label">
+                  HSN Code
+                  <span class="tag is-info">Required for Customs</span>
+
+                </label>
+                <input type="text" class="input" v-model="form.hsn" placeholder="HSN Code : eg. 62140" />
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -184,16 +195,12 @@
         <div class="navbar-brand">
           <p class="navbar-item">
             <button class="level-item button is-link is-light" @click="submit">
-                <b-icon icon="checkbox-marked-outline" class="icon-btn" />
-
-              Save
+              <b-icon icon="checkbox-marked-outline" class="icon-btn" />Save
             </button>
           </p>
           <p class="navbar-item">
             <button class="button is-primary is-light" @click="createNew">
-                          <b-icon icon="delete" class="icon-btn" />
-
-              Clear
+              <b-icon icon="delete" class="icon-btn" />Clear
             </button>
           </p>
         </div>
@@ -252,7 +259,8 @@ export default {
         price: null,
         cost_price: null,
         type: null,
-        tags: null
+        tags: null,
+        hsn: null
       }
     };
   },
@@ -408,15 +416,18 @@ export default {
     },
     submit() {
       let self = this;
-      let formData = this.form 
+      let formData = this.form;
       formData.description = this.editor.getHTML();
-      this.$axios.post('/add/master' , JSON.stringify(formData) ,{headers: {
-                "Content-Type": "application/json"}
-            })
-        .then( function(response){
-          console.log(response)
+      this.$axios
+        .post("/add/master", JSON.stringify(formData), {
+          headers: {
+            "Content-Type": "application/json"
+          }
         })
-}
+        .then(function(response) {
+          console.log(response);
+        });
+    }
   }
 };
 </script>

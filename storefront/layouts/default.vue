@@ -2,8 +2,8 @@
   <div>
     <nav class="navbar">
       <div class="container">
-        <div class="navbar-brand">
-          <p class="navbar-item is-size-5 has-text-weight-light">STORE | FRONT</p>
+        <div class="navbar-brand has-background-black">
+          <p class="navbar-item is-size-5 has-text-white has-text-weight-bold">storefront</p>
         </div>
         <div class="navbar-end">
           <nuxt-link to="/products" class="navbar-item">

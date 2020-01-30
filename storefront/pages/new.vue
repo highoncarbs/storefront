@@ -195,6 +195,13 @@
                 </div>
               </div>
             </div>
+            <br />
+            <div class="field">
+              <div class="control">
+                <label for class="label">HSN</label>
+                <input type="text" class="input" v-model="item.hsn" placeholder="Tags" />
+              </div>
+            </div>
           </div>
         </div>
         <div class="column is-5">
@@ -343,6 +350,7 @@ export default {
           image_alt_text: null,
           type: null,
           tags: null,
+          hsn: null,
           seo: {
             title: null,
             description: null
@@ -443,6 +451,7 @@ export default {
         // inject an image with the src url
         reader.onload = function(event) {
           const imageUrl = event.target.result;
+          console.log(imageUrl);
           // const thumb = document.querySelectorAll('.thumb')[index];
           self.products[index].imageUrlArray.push(imageUrl);
         };
@@ -462,6 +471,7 @@ export default {
         this.products[index].cost_price = option.cost_price;
         this.products[index].type = option.product_type;
         this.products[index].tags = option.tags;
+        this.products[index].hsn = option.hsn;
         this.products[index].editor.setContent(option.description);
       }
     },
@@ -492,7 +502,7 @@ export default {
         image_alt_text: null,
         type: null,
         tags: null,
-        HSN: null,
+        hsn: null,
         seo: {
           title: null,
           description: null
@@ -526,7 +536,7 @@ export default {
         type: baseItem.type,
         tags: baseItem.tags,
         query_master: "",
-        HSN: null,
+        hsn: baseItem.hsn,
         data_master: this.base_master,
         seo: {
           title: baseItem.seo.title,
@@ -551,19 +561,37 @@ export default {
     },
     submit() {
       let self = this;
+
+      let formData = new FormData();
       this.products.forEach(element => {
-        element.editor = element.editor
+        element.editor = element.editor;
         element.description = element.editor.getHTML();
+
+      
       });
       let payload = Object.assign([], this.products);
-      console.log(payload);
-      payload.forEach(element => {
-        delete element.editor;
-      });
 
-      console.log(payload);
+      payload.forEach(element => {     
+        // element.data_master = []        
+        element.editor = null        
+        element.imageUrlArray = null        
+        element.errors = null 
+
+        formData.append('data_'+String(payload.indexOf(element)) , JSON.stringify(element) )
+      
+        // for (var i = 0; i < element.files.length; i++) {
+        //   let file = element.files[i];
+        //   formData.append('files_'+String(payload.indexOf(element)+'_')+i , element.files[i])
+        // }
+                                
+      });
+      console.log(payload)
       this.$axios
-        .post("/add/product", payload)
+        .post("/add/product", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data"
+          }
+        })
         .then(function(response) {
           self.$buefy.snackbar.open({
             duration: 4000,
