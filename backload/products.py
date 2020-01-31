@@ -1,19 +1,15 @@
 from app import app, request, jsonify, json, requests
 from app import db, shop, shopify, SHOP_URL
 
-from model import Master, MasterSchema , Products
+from model import Master, MasterSchema, Products
 
 import base64
 
 
 @app.route('/add/product', methods=['POST'])
 def add_product():
-    print(request.form)
-    # print('-------------------')
-    # payload = request.form
 
     for idx, item_data in enumerate(request.form):
-        print(item_data)
         item = json.loads(request.form[item_data])
         new_product = shopify.Product()
         new_product.title = item['name']
@@ -25,7 +21,7 @@ def add_product():
         product.images = []
 
         # Image Upload Needs work -
-        
+
         # for file in request.files['files_' + str(idx) + '[]']:
         # temp = base64.b64encode( request.files['files_0_0'].read())
         # product.images.append({'attachment' : temp})
@@ -41,12 +37,13 @@ def add_product():
                 product.variants[0].price = item['price']
                 product.variants[0].inventory_management = "shopify"
                 product.variants[0].inventory_quantity = item['qty']
-                product.variants[0].sku = item['sku']+'-'+str(new_data.id)
+                product.variants[0].sku = item['sku']+str(new_data.id)
                 product.variants[0].weight = item['weight']
                 product.variants[0].taxable = True
-
+                new_data.sku = product.variants[0].sku
                 product.save()
-
+                db.session.commit()
+                print(item['hsn'])
                 inventory_payload = {
                     "inventory_item": {
                         "id": product.variants[0].inventory_item_id,
@@ -65,5 +62,5 @@ def add_product():
                 print(product.errors)
         except Exception as e:
             print(str(e))
-        
+
     return jsonify({'message': 'Product Added'})

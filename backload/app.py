@@ -10,7 +10,7 @@ from config import Config
 from sqlalchemy.exc import IntegrityError
 from flask_migrate import Migrate
 import shopify
-
+from config import SHOP_URL
 app = Flask(__name__)
 CORS(app)
 app.config.from_object(Config)
@@ -21,7 +21,6 @@ migrate = Migrate(app, db)
 
 from model import Master, MasterSchema
 
-SHOP_URL = 'https://c5673965f8cef9f48d175bad834a39aa:ad4fd2c761999a71e58d3b22884cbef5@highoncarbs.myshopify.com/admin/api/2019-10/'
 shopify.ShopifyResource.set_site(SHOP_URL)
 shop = shopify.Shop.current()
 

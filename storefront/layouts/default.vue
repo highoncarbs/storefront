@@ -17,6 +17,10 @@
           
             <b-icon class="icon-btn" icon="view-grid"></b-icon>Master
           </nuxt-link>
+          <nuxt-link to="/settings" class="navbar-item">
+          
+            <b-icon class="icon-btn" icon="settings-outline"></b-icon>Settings
+          </nuxt-link>
         </div>
       </div>
     </nav>
