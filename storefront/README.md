@@ -1,6 +1,17 @@
-# storefront
 
-> Storefront for your shopify store
+<p align="center">
+<img align="left" src="./assets/logo.png">
+   <br><br>
+</p>
+
+Storefront to bulk manage for your shopify store
+
+## Features 
+
+ * Create Product Master Template 
+ * Create and Edit Mulitple products at once , pre fill data from master template.  
+ * View and Goto Products addded to Shopify
+ * Generate Unique SKU's.
 
 ## Build Setup
 
@@ -15,8 +26,18 @@ $ npm run dev
 $ npm run build
 $ npm run start
 
-# generate static project
-$ npm run generate
 ```
 
-For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
+## Run Python Backend
+
+> cd backload/
+> pip install -r requirements.txt
+> python run.py
+
+## Made With
+ * Nuxtjs
+ * Bulma & Buefy  
+ * Flask
+ * SQLAlcehmy.
+ * Flask-migrate.
+ * Shopify.
