@@ -1,10 +1,10 @@
 
 <p align="center">
-<img align="left" src="./assets/header-0.png">
+<img align="center" src="./assets/header-0.png">
    <br><br>
+<p align="center"> Storefront helps bulk manage and upload products to your shopify store </p>
 </p>
 
-Storefront to bulk manage for your shopify store
 
 ## Features 
 
