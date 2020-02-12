@@ -5,6 +5,17 @@
 <img align="center" src="./assets/header-0.png">
 </p>
 
+## 📝 Quicknote
+
+This is a very hacky project to bulk upload to shopify . Supports all the Basic features - but has a few knacks here and there -
+
+ * Error Reporting not implmented 
+ * HSN codes should be accurate - else would not be added 
+ * 2 Images should be uploaded for each product to make image uploading work ( can be changed and updated as you like in the code) 
+ * Meta title and description picked up from the title and body of the product   
+ * You shop URI should be added to the config, the settings SHOP URL doesn't work for now.
+
+Feel free to submit issues , if you get stuck somewhere . Would be more than happy to help . Cheers !   
 
 ## Features 
 
@@ -12,10 +23,11 @@
  * Create and Edit Mulitple products at once , pre fill data from master template.  
  * View and Goto Products addded to Shopify
  * Generate Unique SKU's.
+ * Adds ALT tag text to the image
+ * Upload Images - Fixed to 2 ( Requires to add 2 images to work or else ti would throw error)   
 
 ## In Progress Features
 
- * Upload Images  
  * Analytics  
  * Print SKU Product Stickers
  * View orders and print shipping lables and invoices
