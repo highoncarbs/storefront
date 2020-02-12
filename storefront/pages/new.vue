@@ -57,7 +57,7 @@
             <div class="control">
               <label for class="label">Description</label>
               <div class="editor">
-                <editor-menu-bar :editor="item.editor" v-slot="{ commands, isActive }">
+                <editor-menu-bar :editor="editors[index].editor" v-slot="{ commands, isActive }">
                   <div class="menubar">
                     <div class="toolbar">
                       <button class="button is-small" @click="commands.undo">
@@ -136,7 +136,7 @@
                     </div>
                   </div>
                 </editor-menu-bar>
-                <editor-content class="editor__content" :editor="item.editor" />
+                <editor-content class="editor__content" :editor="editors[index].editor" />
               </div>
             </div>
             <br />
@@ -223,7 +223,7 @@
       </p>
       <!-- Advanced Information -->
       <div v-show="advanced[index].show">
-        <div class="columns">
+        <!-- <div class="columns">
           <div class="column">
             <p class="is-size-4 has-text-weight-bold">SEO</p>
             <br />
@@ -264,12 +264,16 @@
               </div>
             </div>
           </div>
-        </div>
+        </div>-->
       </div>
     </div>
 
     <br />
-    <nav class="navbar is-mobile is-fixed-bottom has-shadow" style="padding: 0.5rem 0 0.5rem 0;">
+    <nav
+      class="navbar is-mobile is-fixed-bottom has-shadow"
+      style="padding: 0.5rem 0 0.5rem 0;"
+      :class="{'is-hidden': submitLoad}"
+    >
       <div class="container">
         <div class="navbar-brand">
           <p class="navbar-item">
@@ -290,6 +294,27 @@
         </div>
       </div>
     </nav>
+    <nav
+      class="navbar is-mobile is-fixed-bottom has-shadow has-text-centered"
+      style="padding: 0.5rem 0 0.5rem 0;"
+
+      :class="{'is-hidden': !submitLoad}"
+    >
+      <div class="container ">
+         <p class="navbar-item">
+            <button class="button has-text-weight-medium is-success is-light" >
+              Uploading Products to Shopify . Grab a ☕ while we do the work.
+
+            </button>
+          </p>
+          <p  class="">
+          </p>
+      </div>
+    </nav>
+
+    <b-loading :is-full-page="true" :active.sync="submitLoad" :can-cancel="false">
+      
+    </b-loading>
   </div>
 </template>
 
@@ -330,11 +355,13 @@ export default {
   },
   data() {
     return {
+      submitLoad: false,
       files: [],
       base_master: [],
+      editors: [{ editor: null }],
       products: [
         {
-          editor: null,
+          // editor: null,
           data_master: [],
           query_master: "",
           files: null,
@@ -396,7 +423,7 @@ export default {
   methods: {
     initEditor(index, content) {
       let self = this;
-      this.products[index].editor = new Editor({
+      this.editors[index].editor = new Editor({
         extensions: [
           new Blockquote(),
           new BulletList(),
@@ -472,7 +499,7 @@ export default {
         this.products[index].type = option.product_type;
         this.products[index].tags = option.tags;
         this.products[index].hsn = option.hsn;
-        this.products[index].editor.setContent(option.description);
+        this.editors[index].editor.setContent(option.description);
       }
     },
     deleteItem: function(index) {
@@ -484,8 +511,12 @@ export default {
       this.advanced.push({
         show: false
       });
+      this.editors.push({
+        editor: null
+      });
+
       this.products.push({
-        editor: null,
+        // editor: null,
         HSN: null,
         query_master: "",
         data_master: this.base_master,
@@ -502,17 +533,17 @@ export default {
         image_alt_text: null,
         type: null,
         tags: null,
-        hsn: null,
-        seo: {
-          title: null,
-          description: null
-        },
-        google: {
-          category: null,
-          gender: null,
-          labels: null,
-          condition: null
-        }
+        hsn: null
+        // seo: {
+        //   title: null,
+        //   description: null
+        // },
+        // google: {
+        //   category: null,
+        //   gender: null,
+        //   labels: null,
+        //   condition: null
+        // }
       });
       this.initEditor(this.products.length - 1, "");
     },
@@ -549,9 +580,11 @@ export default {
           condition: baseItem.google.condition
         }
       });
-
+      this.editors.push({
+        editor: null
+      });
       this.initEditor(this.products.length - 1);
-      this.products[this.products.length - 1].editor.setContent(
+      this.editors[this.products.length - 1].editor.setContent(
         baseItem.editor.getHTML()
       );
     },
@@ -561,31 +594,33 @@ export default {
     },
     submit() {
       let self = this;
-
+      this.submitLoad = true;
       let formData = new FormData();
-      this.products.forEach(element => {
-        element.editor = element.editor;
-        element.description = element.editor.getHTML();
-
-      
+      this.products.forEach(function(element, i) {
+        // self.editors[i].editor = element.editor;
+        element.description = self.editors[i].editor.getHTML();
       });
       let payload = Object.assign([], this.products);
 
-      payload.forEach(element => {     
-        // element.data_master = []        
-        element.editor = null        
-        element.imageUrlArray = null        
-        element.errors = null 
+      payload.forEach(element => {
+        element.imageUrlArray = null;
+        element.errors = null;
 
-        formData.append('data_'+String(payload.indexOf(element)) , JSON.stringify(element) )
-      
-        // for (var i = 0; i < element.files.length; i++) {
-        //   let file = element.files[i];
-        //   formData.append('files_'+String(payload.indexOf(element)+'_')+i , element.files[i])
-        // }
-                                
+        formData.append(
+          "data_" + String(payload.indexOf(element)),
+          JSON.stringify(element)
+        );
+        if (element.files != null) {
+          for (var i = 0; i < element.files.length; i++) {
+            let file = element.files[i];
+            formData.append(
+              "files_" + String(payload.indexOf(element) + "_") + i,
+              element.files[i]
+            );
+          }
+        }
       });
-      console.log(payload)
+      console.log(JSON.stringify(formData));
       this.$axios
         .post("/add/product", formData, {
           headers: {
@@ -593,6 +628,7 @@ export default {
           }
         })
         .then(function(response) {
+          self.submitLoad = false;
           self.$buefy.snackbar.open({
             duration: 4000,
             message: response.data.message,
@@ -606,6 +642,8 @@ export default {
           });
         })
         .catch(function(error) {
+          self.submitLoad = false;
+
           console.log(error);
         });
     }
