@@ -3,210 +3,238 @@
     <div class="level">
       <div class="level-left">
         <p class="level-item">
-          <span class="title">New Master</span>
+          <span class="title">Master</span>
         </p>
       </div>
-      <div class="level-right"></div>
+      <div class="level-right">
+        <p class="level-item">
+          <button @click="loadData" class="button is-light">
+            <b-icon icon="eye" class="icon-btn"></b-icon>
+            <span>View</span>
+          </button>
+        </p>
+      </div>
     </div>
+    <div v-if="view" class="box" style="padding:2.5rem">
+      <div class="field">
+        <div class="control">
+          <label for class="label">Product Title</label>
+          <input type="text" class="input" v-model="form.title" placeholder="Enter Product Title" />
+        </div>
+        <br />
+        <div class="control">
+          <label for class="label">Description</label>
+          <div class="editor">
+            <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
+              <div class="menubar">
+                <div
+                  class="toolbar"
+                  style="border:1px solid #eee; padding: 0.75rem 0.75rem; border-radius: 5px"
+                >
+                  <button class="button is-info is-light" @click="commands.undo">
+                    <b-icon icon="undo-variant"></b-icon>
+                  </button>
 
-    <div class="columns">
-      <div class="column is-8">
-        <div class="box">
+                  <button class="button is-info is-light" @click="commands.redo">
+                    <b-icon icon="redo-variant"></b-icon>
+                  </button>
+
+                  <button
+                    class="button is-info is-light"
+                    :class="{ 'is-active': isActive.bold() }"
+                    @click="commands.bold"
+                  >
+                    <b-icon icon="format-bold"></b-icon>
+                  </button>
+
+                  <button
+                    class="button is-info is-light"
+                    :class="{ 'is-active': isActive.italic() }"
+                    @click="commands.italic"
+                  >
+                    <b-icon icon="format-italic"></b-icon>
+                  </button>
+
+                  <button
+                    class="button is-info is-light"
+                    :class="{ 'is-active': isActive.strike() }"
+                    @click="commands.strike"
+                  >
+                    <b-icon icon="format-strikethrough"></b-icon>
+                  </button>
+
+                  <button
+                    class="button is-info is-light"
+                    :class="{ 'is-active': isActive.underline() }"
+                    @click="commands.underline"
+                  >
+                    <b-icon icon="format-underline"></b-icon>
+                  </button>
+                  <button
+                    class="button is-info is-light"
+                    :class="{ 'is-active': isActive.heading({ level: 3 }) }"
+                    @click="commands.heading({ level: 3 })"
+                  >
+                    <b-icon icon="format-title"></b-icon>
+                  </button>
+                  <button
+                    class="button is-info is-light"
+                    :class="{ 'is-active': isActive.paragraph() }"
+                    @click="commands.paragraph"
+                  >
+                    <b-icon icon="format-align-justify"></b-icon>
+                  </button>
+
+                  <button
+                    class="button is-info is-light"
+                    @click="commands.createTable({rowsCount: 2, colsCount: 2, withHeaderRow: false })"
+                  >
+                    <b-icon icon="table-plus"></b-icon>
+                  </button>
+
+                  <span v-if="isActive.table()">
+                    <button class="button is-light" @click="commands.deleteTable">
+                      <b-icon icon="table-remove"></b-icon>
+                    </button>
+                    <button class="button is-light" @click="commands.addRowAfter">
+                      <b-icon icon="table-row-plus-after"></b-icon>
+                    </button>
+
+                    <button class="button is-light" @click="commands.deleteRow">
+                      <b-icon icon="table-row-remove"></b-icon>
+                    </button>
+                  </span>
+                </div>
+              </div>
+            </editor-menu-bar>
+            <editor-content class="editor__content" :editor="editor" />
+          </div>
+        </div>
+        <br />
+        <div class="field-body is-horizontal">
           <div class="field">
             <div class="control">
-              <label for class="label">Product Title</label>
-              <input
-                type="text"
-                class="input"
-                v-model="form.title"
-                placeholder="Enter Product Title"
-              />
+              <label for class="label">Qty</label>
+              <input type="text" class="input" v-model="form.qty" placeholder="Qty" />
             </div>
-            <br />
-            <div class="control">
-              <label for class="label">Description</label>
-              <div class="editor">
-                <editor-menu-bar :editor="editor" v-slot="{ commands, isActive }">
-                  <div class="menubar">
-                    <div class="toolbar">
-                      <button class="button is-small" @click="commands.undo">
-                        <feather size="1rem" type="corner-up-left" />
-                      </button>
-
-                      <button class="button is-small" @click="commands.redo">
-                        <feather size="1rem" type="corner-up-right" />
-                      </button>
-
-                      <button
-                        class="button is-small"
-                        :class="{ 'is-active': isActive.bold() }"
-                        @click="commands.bold"
-                      >
-                        <feather size="1rem" type="bold" />
-                      </button>
-
-                      <button
-                        class="button is-small"
-                        :class="{ 'is-active': isActive.italic() }"
-                        @click="commands.italic"
-                      >
-                        <feather size="1rem" type="italic" />
-                      </button>
-
-                      <button
-                        class="button is-small"
-                        :class="{ 'is-active': isActive.strike() }"
-                        @click="commands.strike"
-                      >
-                        <feather size="1rem" type="minus" />
-                      </button>
-
-                      <button
-                        class="button is-small"
-                        :class="{ 'is-active': isActive.underline() }"
-                        @click="commands.underline"
-                      >
-                        <feather size="1rem" type="underline" />
-                      </button>
-                      <button
-                        class="button is-small"
-                        :class="{ 'is-active': isActive.heading({ level: 3 }) }"
-                        @click="commands.heading({ level: 3 })"
-                      >
-                        <feather size="1rem" type="type" />
-                      </button>
-                      <button
-                        class="button is-small"
-                        :class="{ 'is-active': isActive.paragraph() }"
-                        @click="commands.paragraph"
-                      >
-                        <feather size="1rem" type="align-justify" />
-                      </button>
-
-                      <button
-                        class="button is-small"
-                        @click="commands.createTable({rowsCount: 2, colsCount: 2, withHeaderRow: false })"
-                      >
-                        <feather size="1rem" type="grid" />
-                      </button>
-
-                      <span v-if="isActive.table()">
-                        <button class="button is-small" @click="commands.deleteTable">
-                          <feather size="1rem" type="x-square" />
-                        </button>
-                        <button class="button is-small" @click="commands.addRowAfter">
-                          <feather size="1rem" type="plus-circle" />
-                        </button>
-
-                        <button class="button is-small" @click="commands.deleteRow">
-                          <feather size="1rem" type="x-circle" />
-                        </button>
-                      </span>
-                    </div>
-                  </div>
-                </editor-menu-bar>
-                <editor-content class="editor__content" :editor="editor" />
-              </div>
-            </div>
-            <br />
-            <div class="field-body is-horizontal">
-              <div class="field">
-                <div class="control">
-                  <label for class="label">Qty</label>
-                  <input type="text" class="input" v-model="form.qty" placeholder="Qty" />
-                </div>
-              </div>
-              <div class="field">
-                <div class="control">
-                  <label for class="label">
-                    Weight
-                    <span class="tag is-info">in KG</span>
-                  </label>
-                  <input type="text" class="input" v-model="form.weight" placeholder="Weight" />
-                </div>
-              </div>
-            </div>
-            <br />
+          </div>
+          <div class="field">
             <div class="control">
               <label for class="label">
-                SKU
-                <span class="tag is-info">Prefix of SKU</span>
+                Weight
+                <span class="tag is-info is-light">in KG</span>
               </label>
-              <input type="text" class="input" v-model="form.sku" placeholder="Enter SKU" />
-            </div>
-            <br />
-            <div class="field-body is-horizontal">
-              <div class="field">
-                <div class="control">
-                  <label for class="label">price</label>
-                  <input type="text" class="input" v-model="form.price" placeholder="Price" />
-                </div>
-              </div>
-              <div class="field">
-                <div class="control">
-                  <label for class="label">Cost Price</label>
-                  <input
-                    type="text"
-                    class="input"
-                    v-model="form.cost_price"
-                    placeholder="Cost Price"
-                  />
-                </div>
-              </div>
-            </div>
-            <br />
-
-            <div class="field-body is-horizontal">
-              <div class="field">
-                <div class="control">
-                  <label for class="label">Type</label>
-                  <input type="text" class="input" v-model="form.type" placeholder="Type" />
-                </div>
-              </div>
-              <div class="field">
-                <div class="control">
-                  <label for class="label">
-                    Tags
-                    <span class="tag is-info">Separate by commas</span>
-                  </label>
-                  <input type="text" class="input" v-model="form.tags" placeholder="Tags" />
-                </div>
-              </div>
-            </div>
-            <br>
-            <div class="field">
-              <div class="control">
-                <label for class="label">
-                  HSN Code
-                  <span class="tag is-info">Required for Customs</span>
-
-                </label>
-                <input type="text" class="input" v-model="form.hsn" placeholder="HSN Code : eg. 62140" />
-              </div>
+              <input type="text" class="input" v-model="form.weight" placeholder="Weight" />
             </div>
           </div>
         </div>
+        <br />
+        <div class="control">
+          <label for class="label">
+            SKU
+            <span class="tag is-info is-light">Prefix of SKU</span>
+          </label>
+          <input type="text" class="input" v-model="form.sku" placeholder="Enter SKU" />
+        </div>
+        <br />
+        <div class="field-body is-horizontal">
+          <div class="field">
+            <div class="control">
+              <label for class="label">price</label>
+              <input type="text" class="input" v-model="form.price" placeholder="Price" />
+            </div>
+          </div>
+          <div class="field">
+            <div class="control">
+              <label for class="label">Cost Price</label>
+              <input type="text" class="input" v-model="form.cost_price" placeholder="Cost Price" />
+            </div>
+          </div>
+        </div>
+        <br />
+
+        <div class="field-body is-horizontal">
+          <div class="field">
+            <div class="control">
+              <label for class="label">Type</label>
+              <input type="text" class="input" v-model="form.type" placeholder="Type" />
+            </div>
+          </div>
+          <div class="field">
+            <div class="control">
+              <label for class="label">
+                Tags
+                <span class="tag is-info is-light">Separate by commas</span>
+              </label>
+              <input type="text" class="input" v-model="form.tags" placeholder="Tags" />
+            </div>
+          </div>
+        </div>
+        <br />
+        <div class="field">
+          <div class="control">
+            <label for class="label">
+              HSN Code
+              <span class="tag is-info is-light">Required for Customs</span>
+            </label>
+            <input type="text" class="input" v-model="form.hsn" placeholder="HSN Code : eg. 62140" />
+          </div>
+        </div>
+        <hr />
+        <div class="field">
+          <div v-for="(var_item, index) in form.variants" :key="index">
+            <div class="field-body is-horizontal">
+              <b-field label="Option">
+                <b-input v-model="var_item.option"></b-input>
+              </b-field>
+              <b-field label="Price">
+                <b-input v-model="var_item.price"></b-input>
+              </b-field>
+            </div>
+            <br />
+          </div>
+
+          <div class="control">
+            <button class="button is-info is-light" @click="addVariant(index)">
+              <b-icon icon="plus" class="icon-btn"></b-icon>Add Variants
+            </button>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <div class="buttons">
+        <button class="level-item button is-info" @click="submit">
+          <b-icon icon="check-circle" class="icon-btn" />Save
+        </button>
+        <button class="button is-info is-light" @click="createNew">
+          <b-icon icon="delete" class="icon-btn" />Clear
+        </button>
       </div>
     </div>
 
+    <div v-if="!view" class="box">
+      <b-table :data="data">
+        <template >
+          <b-table-column v-slot="props" field="name" label="Name">{{props.row.name}}</b-table-column>
+          <b-table-column v-slot="props" field="product_type" label="Type">{{props.row.product_type}}</b-table-column>
+          <b-table-column v-slot="props"field="tags" label="Tags">{{props.row.tags}}</b-table-column>
+          <b-table-column v-slot="props"field="price" label="Price">{{props.row.price}}</b-table-column>
+          <b-table-column v-slot="props"field label="Action">
+            <div class="buttons">
+              <div class="button is-info is-light is-small">
+                <b-icon icon="eye"></b-icon>
+              </div>
+              <div class="button is-small is-danger is-light">
+                <b-icon icon="delete"></b-icon>
+              </div>
+            </div>
+          </b-table-column>
+        </template>
+      </b-table>
+    </div>
+
     <br />
-    <nav class="navbar is-mobile is-fixed-bottom has-shadow" style="padding: 0.5rem 0 0.5rem 0;">
-      <div class="container">
-        <div class="navbar-brand">
-          <p class="navbar-item">
-            <button class="level-item button is-link is-light" @click="submit">
-              <b-icon icon="checkbox-marked-outline" class="icon-btn" />Save
-            </button>
-          </p>
-          <p class="navbar-item">
-            <button class="button is-primary is-light" @click="createNew">
-              <b-icon icon="delete" class="icon-btn" />Clear
-            </button>
-          </p>
-        </div>
-      </div>
-    </nav>
-    <br />
+
     <br />
   </div>
 </template>
@@ -246,6 +274,9 @@ export default {
   },
   data() {
     return {
+      data: [],
+      view: true,
+      loading: false,
       editor: null,
       files: [],
       advanced: [{ show: false }],
@@ -260,7 +291,8 @@ export default {
         cost_price: null,
         type: null,
         tags: null,
-        hsn: null
+        hsn: null,
+        variants: []
       }
     };
   },
@@ -319,6 +351,19 @@ export default {
   },
 
   methods: {
+    addVariant(index) {
+      this.form.variants.push({ option: "", price: 0 });
+    },
+    loadData() {
+      this.view = !this.view;
+      this.loading = true;
+      let self = this;
+      this.$axios.get("/get/master").then(response => {
+        console.log(response.data)
+        self.data = response.data;
+        self.loading = false;
+      });
+    },
     beforeDestroy() {
       this.editor.destroy();
     },
@@ -425,7 +470,32 @@ export default {
           }
         })
         .then(function(response) {
-          console.log(response);
+          if (response.data.success) {
+            self.$buefy.snackbar.open({
+              duration: 4000,
+              message: response.data.success,
+              type: "is-light",
+              position: "is-top-right",
+              actionText: "Close",
+              queue: true,
+              onAction: () => {
+                self.isActive = false;
+              }
+            });
+          }
+          if (response.data.message) {
+            self.$buefy.snackbar.open({
+              duration: 4000,
+              message: response.data.message,
+              type: "is-light",
+              position: "is-top-right",
+              actionText: "Close",
+              queue: true,
+              onAction: () => {
+                self.isActive = false;
+              }
+            });
+          }
         });
     }
   }

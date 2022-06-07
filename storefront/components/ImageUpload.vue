@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="notification">
+    <div class="">
       <div class="field">
         <div class="control">
           <p class="label">Upload Images</p>
@@ -8,7 +8,7 @@
       </div>
       <div class="field is-grouped is-grouped-multiline">
         <div class="control">
-          <div class="file">
+          <div class="file is-light">
             <label class="file-label">
               <input
                 class="file-input"
@@ -18,8 +18,8 @@
                 name="ref-file"
                 multiple
               />
-              <span class="file-cta">
-                <b-icon icon="cloud-upload" class="icon-btn" />
+              <span class="file-cta ">
+                <b-icon icon="cloud-upload" class="mr-3" />
 
                 <span class="file-label">Choose a file…</span>
               </span>
@@ -28,7 +28,7 @@
         </div>
         <div class="control">
           <button class="button is-danger is-light" @click="clearUploads">
-            <b-icon icon="delete" class="icon-btn" />Clear
+            <b-icon icon="delete" class="mr-3" />Clear
           </button>
         </div>
       </div>
@@ -58,6 +58,7 @@
           </div>
         </article>
       </ul>
+      
     </div>
   </div>
 </template>
@@ -164,5 +165,12 @@ export default {
 
 .file-input {
   display: none;
+}
+
+.noti-x{
+  border: 1px solid rgba(119, 136, 153, 0.5);
+  border-top: 10px solid rgba(119, 136, 153, 0.5);
+  border-radius: 0 0 10px 10px;
+  background-color: #fff;
 }
 </style>

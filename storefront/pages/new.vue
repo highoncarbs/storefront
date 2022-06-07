@@ -3,46 +3,56 @@
     <div class="level">
       <div class="level-left">
         <p class="level-item">
-          <span class="title">Add Products</span>
+          <span class="is-size-5 has-text-weight-semibold">Add Products</span>
         </p>
         <p class="level-item">
-          <span
-            class="tag is-large is-info is-light has-text-weight-semibold"
-          >{{ products.length }} Item</span>
+          <span class="tag is-dark has-text-weight-semibold"
+            >{{ products.length }} Item</span
+          >
         </p>
       </div>
       <div class="level-right"></div>
     </div>
 
-    <div class="box" v-for="( item , index ) in products" :key="index">
+    <div class="box" v-for="(item, index) in products" :key="index">
       <div class="level">
         <div class="level-left">
-          <p class="level-item is-size-4 has-text-grey-light has-text-weight-bold">{{ index+1 }}.</p>
+          <p
+            class="level-item is-size-4 has-text-grey-light has-text-weight-bold"
+          >
+            {{ index + 1 }}.
+          </p>
           <div class="level-item is-size-4 has-text-grey-light"></div>
         </div>
         <div class="level-right">
-          <button class="button is-danger is-light" v-show="index != 0" @click="deleteItem(index)">
-            <b-icon icon="delete" class="icon-btn" />Delete
+          <button
+            class="button is-danger"
+            v-show="index != 0"
+            @click="deleteItem(index)"
+          >
+            <b-icon icon="delete" class="mr-3" />Delete
           </button>
         </div>
       </div>
-      <div class="columns">
+      <div class="columns is-variable is-8">
         <div class="column">
           <!-- Info Product -->
-          <div class="field notification has-background-info-light">
+          <div class="field">
             <div class="control">
               <label for class="label">Preselect Data from Master</label>
               <b-autocomplete
+                icon="chevron-down"
                 v-model="item.query_master"
                 placeholder="Select"
                 :keep-first="true"
                 :open-on-focus="true"
                 :data="autocompleteMaster(index)"
                 field="name"
-                @select="option => getMaster(option,index)"
+                @select="(option) => getMaster(option, index)"
               ></b-autocomplete>
             </div>
           </div>
+          <hr />
           <div class="field">
             <div class="control">
               <label for class="label">Product Title</label>
@@ -57,86 +67,120 @@
             <div class="control">
               <label for class="label">Description</label>
               <div class="editor">
-                <editor-menu-bar :editor="editors[index].editor" v-slot="{ commands, isActive }">
+                <editor-menu-bar
+                  :editor="editors[index].editor"
+                  v-slot="{ commands, isActive }"
+                >
                   <div class="menubar">
-                    <div class="toolbar">
-                      <button class="button is-small" @click="commands.undo">
-                        <feather size="1rem" type="corner-up-left" />
-                      </button>
-
-                      <button class="button is-small" @click="commands.redo">
-                        <feather size="1rem" type="corner-up-right" />
+                    <div
+                      class="toolbar"
+                      style="
+                        border: 1px solid #eee;
+                        padding: 0.75rem 0.75rem;
+                        border-radius: 5px;
+                      "
+                    >
+                      <button
+                        class="button is-info is-light"
+                        @click="commands.undo"
+                      >
+                        <b-icon icon="undo-variant"></b-icon>
                       </button>
 
                       <button
-                        class="button is-small"
+                        class="button is-info is-light"
+                        @click="commands.redo"
+                      >
+                        <b-icon icon="redo-variant"></b-icon>
+                      </button>
+
+                      <button
+                        class="button is-info is-light"
                         :class="{ 'is-active': isActive.bold() }"
                         @click="commands.bold"
                       >
-                        <feather size="1rem" type="bold" />
+                        <b-icon icon="format-bold"></b-icon>
                       </button>
 
                       <button
-                        class="button is-small"
+                        class="button is-info is-light"
                         :class="{ 'is-active': isActive.italic() }"
                         @click="commands.italic"
                       >
-                        <feather size="1rem" type="italic" />
+                        <b-icon icon="format-italic"></b-icon>
                       </button>
 
                       <button
-                        class="button is-small"
+                        class="button is-info is-light"
                         :class="{ 'is-active': isActive.strike() }"
                         @click="commands.strike"
                       >
-                        <feather size="1rem" type="minus" />
+                        <b-icon icon="format-strikethrough"></b-icon>
                       </button>
 
                       <button
-                        class="button is-small"
+                        class="button is-info is-light"
                         :class="{ 'is-active': isActive.underline() }"
                         @click="commands.underline"
                       >
-                        <feather size="1rem" type="underline" />
+                        <b-icon icon="format-underline"></b-icon>
                       </button>
                       <button
-                        class="button is-small"
+                        class="button is-info is-light"
                         :class="{ 'is-active': isActive.heading({ level: 3 }) }"
                         @click="commands.heading({ level: 3 })"
                       >
-                        <feather size="1rem" type="type" />
+                        <b-icon icon="format-title"></b-icon>
                       </button>
                       <button
-                        class="button is-small"
+                        class="button is-info is-light"
                         :class="{ 'is-active': isActive.paragraph() }"
                         @click="commands.paragraph"
                       >
-                        <feather size="1rem" type="align-justify" />
+                        <b-icon icon="format-align-justify"></b-icon>
                       </button>
 
                       <button
-                        class="button is-small"
-                        @click="commands.createTable({rowsCount: 2, colsCount: 2, withHeaderRow: false })"
+                        class="button is-info is-light"
+                        @click="
+                          commands.createTable({
+                            rowsCount: 2,
+                            colsCount: 2,
+                            withHeaderRow: false,
+                          })
+                        "
                       >
-                        <feather size="1rem" type="grid" />
+                        <b-icon icon="table-plus"></b-icon>
                       </button>
 
                       <span v-if="isActive.table()">
-                        <button class="button is-small" @click="commands.deleteTable">
-                          <feather size="1rem" type="x-square" />
+                        <button
+                          class="button is-light"
+                          @click="commands.deleteTable"
+                        >
+                          <b-icon icon="table-remove"></b-icon>
                         </button>
-                        <button class="button is-small" @click="commands.addRowAfter">
-                          <feather size="1rem" type="plus-circle" />
+                        <button
+                          class="button is-light"
+                          @click="commands.addRowAfter"
+                        >
+                          <b-icon icon="table-row-plus-after"></b-icon>
                         </button>
 
-                        <button class="button is-small" @click="commands.deleteRow">
-                          <feather size="1rem" type="x-circle" />
+                        <button
+                          class="button is-light"
+                          @click="commands.deleteRow"
+                        >
+                          <b-icon icon="table-row-remove"></b-icon>
                         </button>
                       </span>
                     </div>
                   </div>
                 </editor-menu-bar>
-                <editor-content class="editor__content" :editor="editors[index].editor" />
+                <editor-content
+                  class="editor__content"
+                  :editor="editors[index].editor"
+                />
               </div>
             </div>
             <br />
@@ -144,27 +188,47 @@
               <div class="field">
                 <div class="control">
                   <label for class="label">Qty</label>
-                  <input type="text" class="input" v-model="item.qty" placeholder="Qty" />
+                  <input
+                    type="text"
+                    class="input"
+                    v-model="item.qty"
+                    placeholder="Qty"
+                  />
                 </div>
               </div>
               <div class="field">
                 <div class="control">
                   <label for class="label">Weight</label>
-                  <input type="text" class="input" v-model="item.weight" placeholder="Weight" />
+                  <input
+                    type="text"
+                    class="input"
+                    v-model="item.weight"
+                    placeholder="Weight"
+                  />
                 </div>
               </div>
             </div>
             <br />
             <div class="control">
               <label for class="label">SKU</label>
-              <input type="text" class="input" v-model="item.sku" placeholder="Enter SKU" />
+              <input
+                type="text"
+                class="input"
+                v-model="item.sku"
+                placeholder="Enter SKU"
+              />
             </div>
             <br />
             <div class="field-body is-horizontal">
               <div class="field">
                 <div class="control">
                   <label for class="label">Pricing</label>
-                  <input type="text" class="input" v-model="item.price" placeholder="Price" />
+                  <input
+                    type="text"
+                    class="input"
+                    v-model="item.price"
+                    placeholder="Price"
+                  />
                 </div>
               </div>
               <div class="field">
@@ -185,13 +249,23 @@
               <div class="field">
                 <div class="control">
                   <label for class="label">Type</label>
-                  <input type="text" class="input" v-model="item.type" placeholder="Type" />
+                  <input
+                    type="text"
+                    class="input"
+                    v-model="item.type"
+                    placeholder="Type"
+                  />
                 </div>
               </div>
               <div class="field">
                 <div class="control">
                   <label for class="label">Tags</label>
-                  <input type="text" class="input" v-model="item.tags" placeholder="Tags" />
+                  <input
+                    type="text"
+                    class="input"
+                    v-model="item.tags"
+                    placeholder="Tags"
+                  />
                 </div>
               </div>
             </div>
@@ -199,7 +273,58 @@
             <div class="field">
               <div class="control">
                 <label for class="label">HSN</label>
-                <input type="text" class="input" v-model="item.hsn" placeholder="Tags" />
+                <input
+                  type="text"
+                  class="input"
+                  v-model="item.hsn"
+                  placeholder="Tags"
+                />
+              </div>
+            </div>
+            <hr />
+            <div class="field">
+              <div
+                v-for="(var_item, index_var) in item.variants"
+                :key="index_var"
+              >
+                <div class="field-body is-horizontal">
+                  <b-field :label="'Option #' + Number(index_var + 1)">
+                    <b-input
+                      placeholder="Option Name"
+                      v-model="var_item.option"
+                    ></b-input>
+                  </b-field>
+                  <b-field label="Price">
+                    <b-input
+                      placeholder="Option Price"
+                      v-model="var_item.price"
+                    ></b-input>
+                  </b-field>
+                  <b-field label="Qty">
+                    <b-input
+                      placeholder="Option Qty"
+                      v-model="var_item.qty"
+                    ></b-input>
+                  </b-field>
+                  <b-field label="Action">
+                    <button
+                      class="button is-danger is-light"
+                      @click="removeOpt(index_var, index)"
+                    >
+                      <b-icon icon="close"></b-icon>
+                    </button>
+                  </b-field>
+                </div>
+                <br />
+              </div>
+
+              <div class="control">
+                <button
+                  class="button is-info is-light"
+                  @click="addVariant(index)"
+                >
+                  <b-icon icon="plus" class="mr-3"></b-icon>Add Variants
+                </button>
               </div>
             </div>
           </div>
@@ -210,7 +335,7 @@
       </div>
       <hr />
 
-      <p
+      <!-- <p
         class="has-text-centered is-marginless has-text-link has-text-weight-semibold is-fullwidth"
         @click="advanced[index].show = !advanced[index].show"
         style="cursor:pointer;"
@@ -221,7 +346,7 @@
           <feather v-if="advanced[index].show == false" type="chevron-up" />
         </span>
       </p>
-      <!-- Advanced Information -->
+      Advanced Information
       <div v-show="advanced[index].show">
         <!-- <div class="columns">
           <div class="column">
@@ -264,57 +389,48 @@
               </div>
             </div>
           </div>
-        </div>-->
-      </div>
+        </div>
+      </div>-->
     </div>
 
     <br />
     <nav
-      class="navbar is-mobile is-fixed-bottom has-shadow"
-      style="padding: 0.5rem 0 0.5rem 0;"
-      :class="{'is-hidden': submitLoad}"
+      class=""
+      style="padding: 0.5rem 0 0.5rem 0"
+      :class="{ 'is-hidden': submitLoad }"
     >
-      <div class="container">
-        <div class="navbar-brand">
-          <p class="navbar-item">
-            <button class="button is-primary is-light" @click="createNew">
-              <b-icon icon="plus-box-outline" class="icon-btn" />Create New
-            </button>
-          </p>
-          <p class="navbar-item">
-            <button class="button is-black is-light" @click="createCopy">
-              <b-icon icon="content-copy" class="icon-btn" />Create Copy
-            </button>
-          </p>
-          <p class="navbar-item">
-            <button class="level-item button is-link is-light" @click="submit()">
-              <b-icon icon="checkbox-marked-outline" class="icon-btn" />Save
-            </button>
-          </p>
-        </div>
+      <div class="buttons">
+        <button class="button" @click="createNew">
+          <b-icon icon="plus-box-outline" class="mr-3" />Create New
+        </button>
+        <button class="button is-primary is-light" @click="createCopy">
+          <b-icon icon="content-copy" class="mr-3" />Create Copy
+        </button>
+        <button class="level-item button is-info" @click="submit()">
+          <b-icon icon="check-circle" class="mr-3" />Save
+        </button>
       </div>
     </nav>
     <nav
       class="navbar is-mobile is-fixed-bottom has-shadow has-text-centered"
-      style="padding: 0.5rem 0 0.5rem 0;"
-
-      :class="{'is-hidden': !submitLoad}"
+      style="padding: 0.5rem 0 0.5rem 0"
+      :class="{ 'is-hidden': !submitLoad }"
     >
-      <div class="container ">
-         <p class="navbar-item">
-            <button class="button has-text-weight-medium is-success is-light" >
-              Uploading Products to Shopify . Grab a ☕ while we do the work.
-
-            </button>
-          </p>
-          <p  class="">
-          </p>
+      <div class="container">
+        <p class="navbar-item">
+          <button class="button has-text-weight-medium is-success is-light">
+            Uploading Products to Shopify . Grab a ☕ while we do the work.
+          </button>
+        </p>
+        <p class></p>
       </div>
     </nav>
 
-    <b-loading :is-full-page="true" :active.sync="submitLoad" :can-cancel="false">
-      
-    </b-loading>
+    <b-loading
+      :is-full-page="true"
+      :active.sync="submitLoad"
+      :can-cancel="false"
+    ></b-loading>
   </div>
 </template>
 
@@ -344,14 +460,14 @@ import {
   TableRow,
   Strike,
   Underline,
-  History
+  History,
 } from "tiptap-extensions";
 
 export default {
   components: {
     ImageUpload,
     EditorContent,
-    EditorMenuBar
+    EditorMenuBar,
   },
   data() {
     return {
@@ -378,21 +494,22 @@ export default {
           type: null,
           tags: null,
           hsn: null,
+          variants: [],
           seo: {
             title: null,
-            description: null
+            description: null,
           },
           google: {
             category: null,
             gender: null,
             labels: null,
-            condition: null
+            condition: null,
           },
-          errors: {}
-        }
+          errors: {},
+        },
       ],
 
-      advanced: [{ show: false }]
+      advanced: [{ show: false }],
     };
   },
   computed: {},
@@ -401,12 +518,12 @@ export default {
     let self = this;
     this.$axios
       .get("/get/master")
-      .then(function(response) {
+      .then(function (response) {
         console.log(response.data);
         self.products[0].data_master = response.data;
         self.base_master = response.data;
       })
-      .catch(function(error) {
+      .catch(function (error) {
         self.$buefy.snackbar.open({
           duration: 4000,
           message: "Unable to fetch data for Master",
@@ -416,11 +533,22 @@ export default {
           queue: true,
           onAction: () => {
             self.isActive = false;
-          }
+          },
         });
       });
   },
   methods: {
+    removeOpt(index_var, index) {
+      console.log(index_var, index);
+      this.products[index].variants.splice(index_var, 1);
+    },
+    addVariant(index) {
+      this.products[index].variants.push({
+        option: "",
+        price: 0,
+        qty: this.products[index].qty,
+      });
+    },
     initEditor(index, content) {
       let self = this;
       this.editors[index].editor = new Editor({
@@ -442,19 +570,19 @@ export default {
           new Underline(),
           new History(),
           new Table({
-            resizable: true
+            resizable: true,
           }),
           new TableHeader(),
           new TableCell(),
-          new TableRow()
+          new TableRow(),
         ],
 
-        content: content
+        content: content,
       });
     },
     autocompleteMaster(index) {
       if (this.products[index].data_master.length != 0) {
-        return this.products[index].data_master.filter(option => {
+        let data = this.products[index].data_master.filter((option) => {
           return (
             option.name
               .toString()
@@ -462,6 +590,8 @@ export default {
               .indexOf(this.products[index].query_master.toLowerCase()) >= 0
           );
         });
+        console.log(data);
+        return data;
       }
     },
     listUploads(e, index) {
@@ -476,7 +606,7 @@ export default {
         var reader = new FileReader();
         self.products[index].files.push(files[index]);
         // inject an image with the src url
-        reader.onload = function(event) {
+        reader.onload = function (event) {
           const imageUrl = event.target.result;
           console.log(imageUrl);
           // const thumb = document.querySelectorAll('.thumb')[index];
@@ -500,19 +630,27 @@ export default {
         this.products[index].tags = option.tags;
         this.products[index].hsn = option.hsn;
         this.editors[index].editor.setContent(option.description);
+        let variants = JSON.parse(option.variants);
+        variants.forEach((item) => {
+          this.products[index].variants.push({
+            option: item.option,
+            price: item.price,
+            qty: this.products[index].qty,
+          });
+        });
       }
     },
-    deleteItem: function(index) {
+    deleteItem: function (index) {
       this.products[index].files.splice(index, 1);
       this.products[index].imageUrlArray.splice(index, 1);
     },
     clearUploads() {},
     createNew() {
       this.advanced.push({
-        show: false
+        show: false,
       });
       this.editors.push({
-        editor: null
+        editor: null,
       });
 
       this.products.push({
@@ -533,7 +671,9 @@ export default {
         image_alt_text: null,
         type: null,
         tags: null,
-        hsn: null
+        hsn: null,
+        variants: [],
+
         // seo: {
         //   title: null,
         //   description: null
@@ -551,7 +691,7 @@ export default {
       let baseItem = this.products[0];
       console.log(baseItem);
       this.advanced.push({
-        show: false
+        show: false,
       });
 
       let new_product = this.products.push({
@@ -569,40 +709,43 @@ export default {
         query_master: "",
         hsn: baseItem.hsn,
         data_master: this.base_master,
+        variants: baseItem.variants,
+
         seo: {
           title: baseItem.seo.title,
-          description: baseItem.seo.description
+          description: baseItem.seo.description,
         },
         google: {
           category: baseItem.google.category,
           gender: baseItem.google.gender,
           labels: baseItem.google.labels,
-          condition: baseItem.google.condition
-        }
+          condition: baseItem.google.condition,
+        },
       });
       this.editors.push({
-        editor: null
+        editor: null,
       });
       this.initEditor(this.products.length - 1);
       this.editors[this.products.length - 1].editor.setContent(
-        baseItem.editor.getHTML()
+        this.editors[0].editor.getHTML()
       );
     },
     deleteItem(index) {
       this.products.splice(index, 1);
       this.advanced.splice(index, 1);
+      this.editors.splice(index, 1);
     },
     submit() {
       let self = this;
       this.submitLoad = true;
       let formData = new FormData();
-      this.products.forEach(function(element, i) {
+      this.products.forEach(function (element, i) {
         // self.editors[i].editor = element.editor;
         element.description = self.editors[i].editor.getHTML();
       });
       let payload = Object.assign([], this.products);
 
-      payload.forEach(element => {
+      payload.forEach((element) => {
         element.imageUrlArray = null;
         element.errors = null;
 
@@ -624,29 +767,53 @@ export default {
       this.$axios
         .post("/add/product", formData, {
           headers: {
-            "Content-Type": "multipart/form-data"
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(function (response) {
+          self.submitLoad = false;
+          if (response.data.success) {
+            self.$buefy.snackbar.open({
+              duration: 4000,
+              message: response.data.success,
+              type: "is-light",
+              position: "is-top-right",
+              actionText: "Close",
+              queue: true,
+              onAction: () => {
+                self.isActive = false;
+              },
+            });
+          }
+          if (response.data.message) {
+            self.$buefy.snackbar.open({
+              duration: 4000,
+              message: response.data.message,
+              type: "is-light",
+              position: "is-top-right",
+              actionText: "Close",
+              queue: true,
+              onAction: () => {
+                self.isActive = false;
+              },
+            });
           }
         })
-        .then(function(response) {
-          self.submitLoad = false;
-          self.$buefy.snackbar.open({
-            duration: 4000,
-            message: response.data.message,
-            type: "is-light",
-            position: "is-top-right",
-            actionText: "Close",
-            queue: true,
-            onAction: () => {
-              self.isActive = false;
-            }
-          });
-        })
-        .catch(function(error) {
+        .catch(function (error) {
           self.submitLoad = false;
 
           console.log(error);
         });
-    }
-  }
+    },
+  },
 };
 </script>
+
+<style>
+.noti-x {
+  border: 1px solid lightblue;
+  border-top: 5px solid lightblue;
+  border-radius: 0 0 10px 10px;
+  background-color: #fff;
+}
+</style>

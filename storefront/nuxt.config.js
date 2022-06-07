@@ -12,13 +12,15 @@ export default {
       { hid: 'description', name: 'description', content: process.env.npm_package_description || '' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.png' },
+      { rel: 'stylesheet', type: 'text/css', href: 'https://cdn.jsdelivr.net/npm/inter-ui@3.10.0/inter.min.css' },
+
     ]
   },
   /*
   ** Customize the progress-bar color
   */
-  loading: { color: '#fff' },
+  loading: { color: 'orange' },
   /*
   ** Global CSS
   */
@@ -28,7 +30,7 @@ export default {
   ** Plugins to load before mounting the App
   */
   plugins: [
-    { src: '~/plugins/feather' , ssr : false}
+    // { src: '~/plugins/feather', ssr: false }
   ],
   /*
   ** Nuxt.js dev-modules
@@ -41,11 +43,12 @@ export default {
   */
   modules: [
     // Doc: https://github.com/nuxt-community/modules/tree/master/packages/bulma
-    '@nuxtjs/bulma',
+    // '@nuxtjs/bulma',
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
+    '@nuxtjs/auth',
     '@nuxtjs/style-resources',
-    ['nuxt-buefy', { css: true, materialDesignIcons: true }],
+    ['nuxt-buefy', { css: true }],
 
 
   ],
@@ -55,7 +58,42 @@ export default {
   */
   axios: {
     host: 'localhost',
-    port: '5000',  },
+    port: '8585',
+  },
+  // server: {
+  //   host: '192.168.1.108',
+  //   port: '8484',
+  // },
+
+  auth: {
+    cookie: {
+      prefix: 'auth.',
+      maxAge: 604800,
+      options: {
+        path: '/'
+      }
+    },
+    strategies: {
+      local: {
+        redirect: {
+          login: '/login',
+          logout: '/login',
+         
+          home: '/'
+      },
+      
+        endpoints: {
+          login: { url: '/login', method: 'post', propertyName: 'token' },
+          logout: { url: '/logout', method: 'delete' },
+          user: { url: '/user', method: 'get', propertyName: 'user' }
+        },
+        // tokenRequired: true,
+        // tokenType: '',
+        // globalToken: true,
+        // autoFetchUser: true
+      }
+    }
+  },
   styleResources: {
     scss: [
       '~/assets/b-style.scss'
@@ -75,12 +113,12 @@ export default {
     /*
     ** You can extend webpack config here
     */
-    extend (config, ctx) {
+    extend(config, ctx) {
     }
   },
   /*
   ** ENV Variabels for your SHOPIFY Access token 
  */
-env: {
-}
+  env: {
+  }
 }

@@ -1,0 +1,29 @@
+@import "~bulma/sass/utilities/_all";
+@import "~bulma/sass/base/_all";
+@import "~bulma/sass/components/_all";
+@import "~bulma/sass/elements/_all";
+@import "~bulma/sass/form/_all";
+
+$speed-slow: 150ms !default;
+$speed-slower: 250ms !default;
+.has-background-info-light{
+    background-color: $info-light;
+}
+$taginput-height: 1.9em;
+@import "~bulma/sass/elements/table.sass";
+@import "~bulma/sass/components/tabs.sass";
+@import "~bulma/sass/components/dropdown.sass";
+@import "~bulma/sass/elements/tag.sass";
+@import "~buefy/src/scss/utils/_all.scss";
+@import "~buefy/src/scss/components/_datepicker.scss";
+@import "~buefy/src/scss/components/_checkbox.scss";
+@import "~buefy/src/scss/components/_loading.scss";
+@import "~buefy/src/scss/components/_table.scss";
+@import "~buefy/src/scss/components/_tabs.scss";
+@import "~buefy/src/scss/components/_dropdown.scss";
+@import "~buefy/src/scss/components/_notices.scss";
+@import "~buefy/src/scss/components/_tag.scss";
+@import "~buefy/src/scss/components/_taginput.scss";
+@import "~buefy/src/scss/components/_radio.scss";
+@import "~buefy/src/scss/components/_autocomplete.scss";
+
