@@ -60,10 +60,10 @@ export default {
     host: 'localhost',
     port: '8585',
   },
-  // server: {
-  //   host: '192.168.1.108',
-  //   port: '8484',
-  // },
+  server: {
+    // host: '192.168.1.108',
+    port: '8284',
+  },
 
   auth: {
     cookie: {
