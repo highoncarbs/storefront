@@ -117,6 +117,12 @@
                   <span>Dashboard</span>
                 </div>
               </nuxt-link>
+              <nuxt-link class="button-x" to="/basic_master">
+                <div class="button-x is-fullwidth pl-5">
+                  <b-icon class="mr-3" icon="layers-outline"></b-icon>
+                  <span>Basic Master</span>
+                </div>
+              </nuxt-link>
               <nuxt-link class="button-x" to="/master">
                 <div class="button-x is-fullwidth pl-5">
                   <b-icon class="mr-3" icon="layers"></b-icon>

@@ -9,7 +9,7 @@
       <div class="level-right">
         <p class="level-item">
           <button @click="loadData" class="button is-light">
-            <b-icon icon="eye" class="icon-btn"></b-icon>
+            <b-icon icon="eye" class="mr-2"></b-icon>
             <span>View</span>
           </button>
         </p>
@@ -196,7 +196,7 @@
 
           <div class="control">
             <button class="button is-info is-light" @click="addVariant(index)">
-              <b-icon icon="plus" class="icon-btn"></b-icon>Add Variants
+              <b-icon icon="plus" class="mr-2"></b-icon>Add Variants
             </button>
           </div>
         </div>
@@ -204,10 +204,10 @@
       <hr />
       <div class="buttons">
         <button class="level-item button is-info" @click="submit">
-          <b-icon icon="check-circle" class="icon-btn" />Save
+          <b-icon icon="check-circle" class="mr-2" />Save
         </button>
         <button class="button is-info is-light" @click="createNew">
-          <b-icon icon="delete" class="icon-btn" />Clear
+          <b-icon icon="delete" class="mr-2" />Clear
         </button>
       </div>
     </div>

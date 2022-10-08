@@ -107,18 +107,18 @@ export default {
     getProduct(id, index, m_index) {
       let self = this;
       this.$axios.get(`/product/${id}`).then((response) => {
-        // console.log( response.data.images[0].src)
-        try {
-          let image_src = response.data.images[0].src;
-          self.order[m_index].line_items[index].image = image_src;
-          //   this.order_img.push({ image_src, index });
-          setTimeout(function () {}, 1500);
-          // console.log("~", image_src);
-          return image_src;
-        } catch (error) {
-          console.log(error);
-          return null;
-        }
+        console.log(id, response.data.images)
+        // try {
+        //   let image_src = response.data.images[0].src;
+        //   self.order[m_index].line_items[index].image = image_src;
+        //   //   this.order_img.push({ image_src, index });
+        //   setTimeout(function () {}, 1500);
+        //   // console.log("~", image_src);
+        //   return image_src;
+        // } catch (error) {
+        //   console.log(error);
+        //   return null;
+        // }
       });
     },
   },

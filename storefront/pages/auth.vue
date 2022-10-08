@@ -100,11 +100,6 @@ export default {
               this.$router.push("/");
             }
         })
-        // if(this.$auth.loggedIn)
-        // {
-        //   this.$router.
-        // }
-        // await this.$auth.loginWith('local' , { 'data' :formData })
       }
     }
   }

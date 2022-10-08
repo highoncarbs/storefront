@@ -84,8 +84,8 @@
               <span class="has-text-weight-bold">Email</span>
               {{ order.customer_email }}
             </p>
-            <p class="is-uppercase">
-              <span class="has-text-weight-bold ">GST</span>
+            <p class="is-uppercase" v-if="order.customer_gst">
+              <span class="has-text-weight-bold">GST</span>
               {{ order.customer_gst }}
             </p>
           </td>
@@ -130,9 +130,10 @@
       <thead>
         <th>S. No</th>
         <th>Description of Goods</th>
-        <th>Qty</th>
+        <th>Qty<br>(pc/mtr)</th>
         <th>Rate <br />(INR)</th>
         <th>Discount</th>
+        <th>Discounted Rate</th>
         <th>Taxable Amount<br />(INR)</th>
         <th v-if="order.order_type == 'india' || order.order_type == 'export'">
           GST %
@@ -150,55 +151,51 @@
           <td>{{ item.name }}</td>
           <td>{{ item.qty }}</td>
           <td>
-            {{
-              parseFloat(item.price / ((100 + Number(item.tax)) / 100)).toFixed(
-                2
-              )
-            }}
+            {{ getPreTaxRate(item).toFixed(2) }}
           </td>
           <td>{{ item.discount }}</td>
           <td>
-            {{
-              (
-              parseFloat(item.price / ((100 + Number(item.tax)) / 100))*item.qty).toFixed(
-                2
-              )
-            }}
+            {{ getDiscountRate(item) }}
+          </td>
+          <td>
+            {{ (getDiscountRate(item) * item.qty).toFixed(2) }}
           </td>
           <td v-if="order.order_type == 'india'">{{ item.tax }}</td>
           <td v-if="order.order_type == 'intra'">{{ item.tax / 2 }}</td>
           <td v-if="order.order_type == 'intra'">
             {{
-              (parseFloat(
-                (item.price -
-                  parseFloat(item.price / ((100 + Number(item.tax)) / 100))) /
-                  2
-              )*item.qty).toFixed(2)
+              (
+                parseFloat(
+                  (item.price -
+                    parseFloat(item.price / ((100 + Number(item.tax)) / 100))) /
+                    2
+                ) * item.qty
+              ).toFixed(2)
             }}
           </td>
           <td v-if="order.order_type == 'intra'">{{ item.tax / 2 }}</td>
           <td v-if="order.order_type == 'intra'">
-            {{ (
-              parseFloat(
-                (item.price -
-                  parseFloat(item.price / ((100 + Number(item.tax)) / 100))) /
-                  2
-              )*item.qty).toFixed(2)
+            {{
+              (
+                parseFloat(
+                  (item.price -
+                    parseFloat(item.price / ((100 + Number(item.tax)) / 100))) /
+                    2
+                ) * item.qty
+              ).toFixed(2)
             }}
           </td>
           <td>
-            {{ (
-              parseFloat(
-                item.price -
-                  parseFloat(item.price / ((100 + Number(item.tax)) / 100))
-              )*item.qty).toFixed(2)
+            {{
+              (getDiscountRate(item) * item.qty * (item.tax / 100)).toFixed(2)
             }}
           </td>
-          <td>{{ parseFloat(item.price*item.qty).toFixed(2) }}</td>
+          <td>{{ getLineItemRate(item) }}</td>
         </tr>
-        <tr>
+        <tr v-if="order.shipping_rate != 0 && order.shipping_rate != null">
           <td>{{ order.item.length + 1 }}</td>
           <td>Shipping</td>
+          <td></td>
           <td></td>
           <!-- <td>{{order.shipping_rate}}</td> -->
           <td>
@@ -270,9 +267,10 @@
           <td></td>
           <td>Total</td>
           <td></td>
-          <td>{{ getTotalRate() }}</td>
           <td></td>
-          <td>{{ getTotalRate() }}</td>
+          <td></td>
+          <td></td>
+          <td>{{ getTotalTaxable() }}</td>
           <td
             v-if="order.order_type == 'india' || order.order_type == 'export'"
           ></td>
@@ -280,7 +278,7 @@
           <td v-if="order.order_type == 'intra'"></td>
           <td v-if="order.order_type == 'intra'"></td>
           <td v-if="order.order_type == 'intra'"></td>
-          <td>{{ getTotalTaxable() }}</td>
+          <td>{{ getTotalTaxes() }}</td>
           <td>
             {{
               parseFloat(
@@ -318,7 +316,6 @@
 
 <script>
 export default {
-  
   layout: "empty",
   mounted() {
     this.$axios.get("get/user/firm").then((response) => {
@@ -331,8 +328,12 @@ export default {
     });
     this.$axios.get("/get/order/" + this.$route.params.id).then((response) => {
       this.order = response.data;
-      document.title = "ITM-"+this.order.firm_order_id+' - '+new Date(this.order.inv_date).toLocaleDateString('en-in')+' - TAX'
-
+      document.title =
+        "ITM-" +
+        this.order.firm_order_id +
+        " - " +
+        new Date(this.order.inv_date).toLocaleDateString("en-in") +
+        " - TAX";
     });
   },
   data() {
@@ -354,19 +355,52 @@ export default {
     };
   },
   methods: {
+    getPreTaxRate(item) {
+      return item.price / ((100 + Number(item.tax)) / 100);
+    },
+    getDiscountRate(item) {
+      if (item.discount && item.discount != 0) {
+        return (this.getPreTaxRate(item) * (1 - item.discount / 100)).toFixed(
+          2
+        );
+      } else {
+        return this.getPreTaxRate(item).toFixed(2);
+      }
+    },
+    getLineItemRate(item) {
+      return (
+        this.getDiscountRate(item) * item.qty +
+        this.getDiscountRate(item) * item.qty * (item.tax / 100)
+      ).toFixed(2);
+    },
     getTotalRate() {
       let total = 0.0;
       this.order.item.forEach((item) => {
-        total += (parseFloat(item.price / ((100 + Number(item.tax)) / 100))*item.qty);
+        total +=
+          parseFloat(item.price / ((100 + Number(item.tax)) / 100)) * item.qty;
       });
+      return parseFloat(total).toFixed(2);
+    },
+    getTotalTaxes() {
+      let total = 0.0;
+      this.order.item.forEach((item) => {
+        total += this.getDiscountRate(item) * item.qty * (item.tax / 100)
+      });
+      if(this.order.shipping_rate != 0 ){
+
+        total +=
+        this.order.shipping_rate -
+        parseFloat(
+            this.order.shipping_rate /
+            ((100 + Number(this.order.shipping_tax)) / 100)
+        );
+        }
       return parseFloat(total).toFixed(2);
     },
     getTotalTaxable() {
       let total = 0.0;
       this.order.item.forEach((item) => {
-        total += (
-          item.price -
-          parseFloat(item.price / ((100 + Number(item.tax)) / 100)))*item.qty;
+        total += this.getDiscountRate(item) * item.qty;
       });
       total +=
         this.order.shipping_rate -

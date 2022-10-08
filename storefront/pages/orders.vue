@@ -1,13 +1,28 @@
 <template>
   <div class>
+    <!-- <b-loading v-model="loading"  :is-full-page="false"/> -->
     <div class="level">
       <div class="level-left">
-        <p class="level-item">
-          <span class="title is-size-4">Orders</span>
-        </p>
-        <div class="level-item" v-if="checkedRows != 0">
+        <div class="level-item">
+          <div>
+
+          <span class="title is-size-4">Orders</span> <br>
+          <span class="subtitle heading">SHOWING 20</span> 
+          </div>
+        </div>
+        <div class="level-item">
+          <b-field>
+            <b-select @input="getOrderList()" v-model="showItems">
+              <option value="20">20</option>
+              <option value="40">40</option>
+              <option value="60">60</option>
+              <option value="100">100</option>
+            </b-select>
+          </b-field>
+        </div>
+        <div class="level-item ml-4" v-if="checkedRows != 0">
           <div class="buttons">
-            <button class="button is-info">
+            <button @click="printInvChecked()" class="button is-info">
               <b-icon icon="printer" class="mr-2"></b-icon>
               <span>Print Invoices</span>
             </button>
@@ -24,9 +39,15 @@
       </div>
       <div class="level-right">
         <div class="level-item">
+          <b-field >
+            <b-checkbox v-model="hide_inv">Hide Invoiced Order</b-checkbox>
+          </b-field>
+        </div>
+        <div class="level-item">
           <b-field>
             <b-select @input="getOrderList" icon="check" v-model="order_type">
               <option value="order">Order Placed</option>
+              <option value="no_inv">Invoice not generated</option>
               <option value="abandon">Abandoned Orders</option>
             </b-select>
           </b-field>
@@ -34,11 +55,42 @@
       </div>
     </div>
 
-    <b-table :checked-rows.sync="checkedRows"
-                    checkable :data="orderlist">
+    <b-table
+      :loading="loading"
+      :checked-rows.sync="checkedRows"
+      checkable
+      :data="orderlist"
+
+      :row-class="(row, index) => Object.keys(row).includes('inv_status') && Object.keys(row.inv_status).includes('firm_order_id') && 'has-background-link-light has-text-dark'"
+
+    >
       <b-table-column label="Order ID" v-slot="props">
         <span class="has-text-weight-bold">
-          # {{ props.row.order_number }}
+          # {{ props.row.order_number }} </span
+        ><br />
+        <a
+          v-if="
+            getDispatchStatus(props.row.fulfillment_status).status ==
+            'dispatched'
+          "
+          target="_blank"
+          :href="
+            getDispatchStatus(props.row.fulfillment_status).status ==
+            'dispatched'
+              ? props.row.fulfillments[0].tracking_urls
+              : '#'
+          "
+          class="tag heading"
+          :class="getDispatchStatus(props.row.fulfillment_status).class"
+        >
+          {{ getDispatchStatus(props.row.fulfillment_status).status }} ↗
+        </a>
+        <span
+          v-else
+          class="tag heading"
+          :class="getDispatchStatus(props.row.fulfillment_status).class"
+        >
+          {{ getDispatchStatus(props.row.fulfillment_status).status }}
         </span>
       </b-table-column>
       <b-table-column label="Name" v-slot="props">
@@ -48,6 +100,10 @@
             " " +
             props.row.shipping_address.last_name
           }}
+        </span>
+        <br />
+        <span v-if="Object.keys(props.row).includes('inv_status') && Object.keys(props.row.inv_status).includes('firm_order_id')" class="has-text-weight-semibold">
+          Invoice #{{ props.row.inv_status.firm_order_id }}
         </span>
       </b-table-column>
       <b-table-column label="Items" v-slot="props">
@@ -72,10 +128,12 @@
           <button class="button is-link" @click="printImg(props.row)">
             <b-icon icon="file-image"></b-icon>
           </button>
-       
-          <button class="button is-success"  @click="printInv(props.row.order_number)">
-<b-icon icon="printer"></b-icon>
 
+          <button
+            class="button is-success"
+            @click="printInv(props.row.order_number)"
+          >
+            <b-icon icon="printer"></b-icon>
           </button>
           <!-- <button class="button">
               <b-icon icon="dots"></b-icon>
@@ -142,7 +200,10 @@
           </b-field>
         </b-field>
         <b-field label="GST">
-            <b-input v-model="inv.gst" placeholder="Enter Customer GST Numebr"></b-input>
+          <b-input
+            v-model="inv.gst"
+            placeholder="Enter Customer GST Numebr"
+          ></b-input>
         </b-field>
         <b-field label="Discount %">
           <div class="buttons">
@@ -245,8 +306,10 @@ export default {
 
       orderlist: [],
       order_type: "order",
+      hide_inv: false,
+      showItems: 20,
+      loading: false,
       showInv: false,
-      showOrder: false,
       currOrder: null,
       shopurl: this.$auth.user.shop_url,
       shopname: this.$auth.user.shop_name,
@@ -257,12 +320,17 @@ export default {
     this.getOrderList();
   },
   methods: {
-    cleanCurrOrder(){
-      this.inv.data = null
-      this.inv.inv_num = null
-      this.inv.type = "india"
-      this.inv.shipping_rate = null
-      this.inv.shipping_tax = null
+    hideInvOrders(){
+      if(this.hide_inv){
+        
+      }
+    },
+    cleanCurrOrder() {
+      this.inv.data = null;
+      this.inv.inv_num = null;
+      this.inv.type = "india";
+      this.inv.shipping_rate = null;
+      this.inv.shipping_tax = null;
     },
     csvOrder() {
       window.URL = window.webkitURL || window.URL;
@@ -296,13 +364,23 @@ export default {
       a.click();
     },
     getOrderList() {
-      this.$axios.get("/orders?type=" + this.order_type).then((response) => {
-        if (this.order_type == "order") {
-          this.orderlist = response.data.orders;
-        } else {
-          this.orderlist = response.data.checkouts;
-        }
-      });
+      this.loading = true;
+      this.$axios
+        .get(`/orders?type=${this.order_type}&show=${this.showItems}`  )
+        .then((response) => {
+          if (this.order_type == "order") {
+            this.orderlist = response.data.orders;
+          } else {
+            this.orderlist = response.data.checkouts;
+          }
+        })
+        .finally(() => {
+          this.loading = false;
+                    this.orderlist.forEach( item =>{
+                      this.checkInv(item)
+                    })
+
+});
     },
     setTax(tax) {
       if (this.currOrder) {
@@ -315,10 +393,10 @@ export default {
     setDis(dis) {
       if (this.currOrder) {
         this.currOrder.line_items.forEach((item) => {
-          console.log(item.discount)
+          console.log(item.discount);
           this.$set(item, "discount", dis);
           item.discount = dis;
-          console.log('~',item.discount)
+          console.log("~", item.discount);
         });
       }
     },
@@ -368,18 +446,49 @@ export default {
       localStorage.setItem("order-img-list", JSON.stringify(this.checkedRows));
       window.open("/print/order-img-list", "_blank");
     },
+    printInvChecked() {
+      this.checkedRows.forEach(inv => {
+
+        // this.currOrder = row;
+      localStorage.setItem("order-list", JSON.stringify(this.checkedRows));
+      window.open("/print/order-list", "_blank");
+      })
+    },
+    getDispatchStatus(data) {
+      let obj = {
+        class: "is-warning",
+        status: "pending",
+      };
+
+      if (data == "fulfilled") {
+        obj.class = "is-link";
+        obj.status = "dispatched";
+      }
+
+      return obj;
+    },
+    checkInv(data) {
+      let self = this;
+      let res = null;
+      this.$axios
+        .get("/get/order/inv/" + data.order_number)
+        .then((response) => {
+          // let payload = respon
+          self.$set(data, "inv_status", response.data);
+        });
+    },
     createInv(row) {
       this.currOrder = row;
       this.showInv = !this.showInv;
       let self = this;
       this.$axios.get("/get/order/" + row.order_number).then((response) => {
-        console.log(response);
         let payload = response.data;
         if (Object.keys(payload).length != 0) {
           self.inv.shipping_rate = payload.shipping_rate;
           self.inv.shipping_tax = payload.shipping_tax;
           self.inv.type = payload.order_type;
-          self.inv.date = new Date(payload.inv_date);
+          console.log('----->',payload.inv_date)
+          self.inv.date = new Date(row.created_at);
           self.inv.inv_num = payload.firm_order_id;
           // this.$set(item, "tax", row.tax);
           this.currOrder.line_items.forEach((item) => {
@@ -407,7 +516,17 @@ export default {
         };
         this.$axios.post("/orders/save", payload).then((response) => {
           if (response.status == 200) {
-            console.log("Order saved");
+            this.$buefy.snackbar.open({
+              duration: 4000,
+              message: response.data.success,
+              type: "is-light",
+              position: "is-top-right",
+              actionText: "Close",
+              queue: true,
+              onAction: () => {
+                self.isActive = false;
+              },
+            });
           }
         });
       }
