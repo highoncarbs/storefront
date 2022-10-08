@@ -23,9 +23,9 @@ ma = Marshmallow(app)
 migrate = Migrate(app, db)
 jwt = JWTManager(app)
 
-from model import Master, MasterSchema , User
+from model import Master, MasterSchema , User , Colour , Craft , Fabric , Tags
 
-import products , auth , orders
+import products , auth , orders 
 
 @app.route('/get/products', methods=['GET'])
 @jwt_required
@@ -75,3 +75,5 @@ def get_master():
 
 # Flow -> Create Porduct with Base Details -> get Product ID -> UPdate Inventory Level ( cost , sku )-> Return adn Add to local database .
 # 
+
+

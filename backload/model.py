@@ -197,6 +197,25 @@ class OrdersSchema(ma.ModelSchema):
     item = ma.Nested(ItemSchema(many=True))
     class meta:
         model=Orders
+
+class OrdersMinSchema(ma.ModelSchema):
+    shopify_order_id = field_for(Orders, 'shopify_order_id', dump_only=True)
+    firm_order_id = field_for(Orders, 'firm_order_id', dump_only=True)
+    shipping_rate = field_for(Orders, 'shipping_rate', dump_only=True)
+    shipping_tax = field_for(Orders, 'shipping_tax', dump_only=True)
+    inv_date = field_for(Orders, 'inv_date', dump_only=True)
+    order_type = field_for(Orders, 'order_type', dump_only=True)
+    # customer_name = field_for(Orders, 'customer_name', dump_only=True)
+    # customer_address = field_for(Orders, 'customer_address', dump_only=True)
+    # customer_phone = field_for(Orders, 'customer_phone', dump_only=True)
+    # customer_email = field_for(Orders, 'customer_email', dump_only=True)
+    # customer_gst = field_for(Orders, 'customer_gst', dump_only=True)
+    # shipping_address = field_for(Orders, 'shipping_address', dump_only=True)
+    # total_bill = field_for(Orders, 'total_bill', dump_only=True)
+    # status = field_for(Orders, 'status', dump_only=True)
+   
+    class meta:
+        model=Orders
     
 '''
 
@@ -218,3 +237,51 @@ class OrdersSchema(ma.ModelSchema):
             -> tax
 
 '''
+
+
+class Colour(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30), unique=True, nullable=False)
+
+    def __init__(self, name):
+        self.name = name
+
+
+class ColourSchema(ma.ModelSchema):
+    class Meta:
+        model = Colour
+
+class Craft(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+
+    def __init__(self, name):
+        self.name = name
+
+
+class CraftSchema(ma.ModelSchema):
+    class Meta:
+        model = Craft
+class Fabric(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+
+    def __init__(self, name):
+        self.name = name
+
+
+class FabricSchema(ma.ModelSchema):
+    class Meta:
+        model = Fabric
+        
+class Tags(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+
+    def __init__(self, name):
+        self.name = name
+
+
+class TagsSchema(ma.ModelSchema):
+    class Meta:
+        model = Tags
