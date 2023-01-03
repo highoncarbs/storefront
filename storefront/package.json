@@ -16,7 +16,7 @@
     "@nuxtjs/auth": "^4.9.1",
     "@nuxtjs/axios": "^5.13.1",
     "@nuxtjs/style-resources": "^1.0.0",
-    "nuxt": "^2.15.4",
+    "nuxt": "^3.0.0",
     "nuxt-buefy": "^0.4.7",
     "tiptap": "^1.32.2",
     "tiptap-extensions": "^1.35.2",
@@ -30,6 +30,6 @@
     "eslint": "^6.1.0",
     "eslint-plugin-nuxt": "^2.0.0",
     "node-sass": "^4.14.1",
-    "sass-loader": "^8.0.2"
+    "sass-loader": "^13.2.0"
   }
 }
